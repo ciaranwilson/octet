@@ -60,6 +60,8 @@ namespace octet {
     key_shift,
     key_ctrl,
     key_alt,
+	key_a = 65,
+	key_d = 68,
 
     // mouse buttons
     key_lmb,
