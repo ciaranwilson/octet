@@ -242,7 +242,7 @@ namespace octet {
 
     // use the keyboard to move the ship
 	void move_ship() {
-		const float ship_speed = 0.05f;
+		const float ship_speed = 0.1f;
 		const float ship_rotation = 3.0f;
 		// left and right arrows
 		if (is_key_down(key_left)) {
@@ -277,11 +277,11 @@ namespace octet {
         --missiles_disabled;
       } else if (is_key_going_down(' ')) {
         // find a missile
-        for (int i = 0; i != num_missiles; ++i) {
+         for (int i = 0; i != num_missiles; ++i) {
           if (!sprites[first_missile_sprite+i].is_enabled()) {
             sprites[first_missile_sprite+i].set_relative(sprites[ship_sprite], 0, 0.5f);
             sprites[first_missile_sprite+i].is_enabled() = true;
-            missiles_disabled = 0;
+            missiles_disabled = 5;
             ALuint source = get_sound_source();
             alSourcei(source, AL_BUFFER, whoosh);
             alSourcePlay(source);
@@ -338,10 +338,22 @@ namespace octet {
               goto next_missile;
             }
           }
-          if (missile.collides_with(sprites[first_border_sprite+1])) {
-            missile.is_enabled() = false;
-            missile.translate(20, 0);
-          }
+		  if (missile.collides_with(sprites[first_border_sprite + 1])) {
+			  missile.is_enabled() = false;
+			  missile.translate(20, 0);
+		  }
+		  else if (missile.collides_with(sprites[first_border_sprite + 0])) {
+			  missile.is_enabled() = false;
+			  missile.translate(20, 0);
+		  }
+		  else if (missile.collides_with(sprites[first_border_sprite + 2])) {
+			  missile.is_enabled() = false;
+			  missile.translate(20, 0);
+		  }
+		  else if (missile.collides_with(sprites[first_border_sprite + 3])) {
+			  missile.is_enabled() = false;
+			  missile.translate(20, 0);
+		  }
         }
       next_missile:;
       }
@@ -444,7 +456,6 @@ namespace octet {
 
       GLuint ship = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/Ship.gif");
       sprites[ship_sprite].init(ship, 0, -2.75f, 0.25f, 0.25f);
-
       GLuint GameOver = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/GameOver.gif");
       sprites[game_over_sprite].init(GameOver, 20, 0, 3, 1.5f);
 
