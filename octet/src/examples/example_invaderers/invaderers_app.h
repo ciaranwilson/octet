@@ -243,33 +243,27 @@ namespace octet {
     // use the keyboard to move the ship
 	void move_ship() {
 		const float ship_speed = 0.1f;
-		const float ship_rotation = 3.0f;
+		
 		// left and right arrows
-		if (is_key_down(key_left)) {
-			sprites[ship_sprite].translate(-ship_speed, 0);
-			if (sprites[ship_sprite].collides_with(sprites[first_border_sprite + 2])) {
-				sprites[ship_sprite].translate(+ship_speed, 0);
-			}
-		}
-		else if (is_key_down(key_right)) {
-			sprites[ship_sprite].translate(+ship_speed, 0);
-			if (sprites[ship_sprite].collides_with(sprites[first_border_sprite + 3])) {
-				sprites[ship_sprite].translate(-ship_speed, 0);
-			}
-		}
-		else if (is_key_down(key_up)) {
+		if (is_key_down(key_up)) {
 			sprites[ship_sprite].translate(0, ship_speed);
 		}
 		else if (is_key_down(key_down)) {
 			sprites[ship_sprite].translate(0, -ship_speed);
 		}
-		else if (is_key_down(key_a)) {
+		
+    }
+	
+	//use the keyboard to rotate the ship
+	void rotate_ship() {
+		const float ship_rotation = 5.0f;
+		if (is_key_down(key_left)) {
 			sprites[ship_sprite].rotate(ship_rotation);
 		}
-		else if (is_key_down(key_d)) {
+		else if (is_key_down(key_right)) {
 			sprites[ship_sprite].rotate(-ship_rotation);
 		}
-    }
+	}
 
     // fire button (space)
     void fire_missiles() {
@@ -515,6 +509,8 @@ namespace octet {
       }
 
       move_ship();
+
+	  rotate_ship();
 
       fire_missiles();
 
