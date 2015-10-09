@@ -386,7 +386,7 @@ namespace octet {
       }
     }
 
-    // check if any invaders hit the sides.
+    // check if any invaderers hit the sides.
     bool invaders_collide(sprite &border) {
       for (int j = 0; j != num_invaderers; ++j) {
         sprite &invaderer = sprites[first_invaderer_sprite+j];
@@ -497,7 +497,7 @@ namespace octet {
       bombs_disabled = 50;
       invader_velocity = 0.01f;
       live_invaderers = num_invaderers;
-      num_lives = 3;
+      num_lives = 10;
       game_over = false;
       score = 0;
     }
