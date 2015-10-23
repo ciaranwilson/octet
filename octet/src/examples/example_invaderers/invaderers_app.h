@@ -173,6 +173,8 @@ namespace octet {
       first_border_sprite,
       last_border_sprite = first_border_sprite + num_borders - 1,
 
+		backgound_sprite,
+
       num_sprites,
 
     };
@@ -368,7 +370,7 @@ namespace octet {
             goto next_bomb;
           }
           if (bomb.collides_with(sprites[first_border_sprite+0])) {
-            bomb.is_enabled() = false;
+            bomb.is_enabled() = true;
             bomb.translate(20, 0);
           }
         }
@@ -470,6 +472,10 @@ namespace octet {
       sprites[first_border_sprite+2].init(white, -3, 0, 0.2f, 6);
       sprites[first_border_sprite+3].init(white, 3,  0, 0.2f, 6);
 
+	  //background
+	  GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invacerers/background.gif");
+	  sprites[backgound_sprite].init(background, 0, -3.0f, 6, 0.2f);
+
       // use the missile texture
       GLuint missile = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile.gif");
       for (int i = 0; i != num_missiles; ++i) {
@@ -495,7 +501,7 @@ namespace octet {
       // sundry counters and game state.
       missiles_disabled = 0;
       bombs_disabled = 50;
-      invader_velocity = 0.01f;
+      invader_velocity = 0.02f;
       live_invaderers = num_invaderers;
       num_lives = 10;
       game_over = false;
