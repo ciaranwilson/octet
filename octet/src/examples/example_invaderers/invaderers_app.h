@@ -474,7 +474,7 @@ namespace octet {
       sprites[first_border_sprite+3].init(white, 3,  0, 0.2f, 6);
 
 	  //background
-	  GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invacerers/background.gif");
+	  GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/background.gif");
 	  sprites[backgound_sprite].init(background, 0, -3.0f, 6, 0.2f);
 
       // use the missile texture
