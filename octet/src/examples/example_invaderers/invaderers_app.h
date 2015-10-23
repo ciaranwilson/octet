@@ -202,6 +202,7 @@ namespace octet {
 
     // big array of sprites
     sprite sprites[num_sprites];
+	sprite my_background;
 
     // random number generator
     class random randomizer;
@@ -492,6 +493,9 @@ namespace octet {
         sprites[first_bomb_sprite+i].is_enabled() = false;
       }
 
+	  GLuint bg = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/spider_background.gif");
+	  my_background.init(bg, 0, 0, 758, 758);
+
       // sounds
       whoosh = resource_dict::get_sound_handle(AL_FORMAT_MONO16, "assets/invaderers/whoosh.wav");
       bang = resource_dict::get_sound_handle(AL_FORMAT_MONO16, "assets/invaderers/bang.wav");
@@ -552,6 +556,9 @@ namespace octet {
       // allow alpha blend (transparency when alpha channel is 0)
       glEnable(GL_BLEND);
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	  // drawing background
+	  my_background.render(texture_shader_, cameraToWorld);
 
       // draw all the sprites
       for (int i = 0; i != num_sprites; ++i) {
