@@ -106,7 +106,7 @@ namespace octet {
 	void rotate(float angle) {
 		modelToWorld.rotateZ(angle);
 	}
-
+	
     // position the object relative to another.
     void set_relative(sprite &rhs, float x, float y) {
       modelToWorld = rhs.modelToWorld;
@@ -154,7 +154,7 @@ namespace octet {
       num_cols = 10,
       num_missiles = 2,
       num_bombs = 2,
-      num_borders = 4,
+      num_borders = 7,
       num_invaderers = num_rows * num_cols,
 
       // sprite definitions
@@ -472,6 +472,9 @@ namespace octet {
       sprites[first_border_sprite+1].init(white, 0,  3, 6, 0.2f);
       sprites[first_border_sprite+2].init(white, -3, 0, 0.2f, 6);
       sprites[first_border_sprite+3].init(white, 3,  0, 0.2f, 6);
+	  sprites[first_border_sprite+4].init(white, -2, 1, 4, 0.2f);  //walls
+	  sprites[first_border_sprite+5].init(white, 2, 0, 4, 0.2f);   
+	  sprites[first_border_sprite+6].init(white, -2, -1, 4, 0.2f);
 
 	  //background
 	  GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/background.gif");
