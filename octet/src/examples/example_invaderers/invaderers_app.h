@@ -447,7 +447,7 @@ namespace octet {
 
       // set up the matrices with a camera 5 units from the origin
       cameraToWorld.loadIdentity();
-      cameraToWorld.translate(0, 0, 3);
+      cameraToWorld.translate(0, 0, 4);
 
       font_texture = resource_dict::get_texture_handle(GL_RGBA, "assets/big_0.gif");
 
@@ -468,10 +468,10 @@ namespace octet {
 
       // set the border to white for clarity
       GLuint white = resource_dict::get_texture_handle(GL_RGB, "#ffffff");
-      sprites[first_border_sprite+0].init(white, 0, -3, 6, 0.2f);
-      sprites[first_border_sprite+1].init(white, 0,  3, 6, 0.2f);
-      sprites[first_border_sprite+2].init(white, -3, 0, 0.2f, 6);
-      sprites[first_border_sprite+3].init(white, 3,  0, 0.2f, 6);
+      sprites[first_border_sprite+0].init(white, 0, -4, 8, 0.2f);
+      sprites[first_border_sprite+1].init(white, 0,  4, 8, 0.2f);
+      sprites[first_border_sprite+2].init(white, -4, 0, 0.2f, 8);
+      sprites[first_border_sprite+3].init(white, 4,  0, 0.2f, 8);
 	  sprites[first_border_sprite+4].init(white, -2, 1, 4, 0.2f);  //walls
 	  sprites[first_border_sprite+5].init(white, 2, 0, 4, 0.2f);   
 	  sprites[first_border_sprite+6].init(white, -2, -1, 4, 0.2f);
