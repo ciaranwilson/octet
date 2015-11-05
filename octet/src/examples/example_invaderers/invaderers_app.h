@@ -551,32 +551,36 @@ namespace octet {
     }
 
     // called every frame to move things
-    void simulate() {
-      if (game_over) {
-        return;
-      }
+	void simulate() {
+		if (game_over) {
+			return;
+		}
 
-      move_ship();
+		move_ship();
 
-	  rotate_ship();
+		rotate_ship();
 
-      fire_missiles();
+		fire_missiles();
 
-      fire_bombs();
+		fire_bombs();
 
-      move_missiles();
+		move_missiles();
 
-      move_bombs();
+		move_bombs();
 
-      move_invaders(invader_velocity, 0);
+		move_invaders(invader_velocity, 0);
 
-      sprite &border = sprites[first_border_sprite+(invader_velocity < 0 ? 2 : 3)];
-      if (invaders_collide(border)) {
-        invader_velocity = -invader_velocity;
-        move_invaders(invader_velocity, -0.1f);
-      }
-    }
+		for (unsigned int i = 0; i < map_walls.size(); i = i + 2) {
+			
 
+
+			sprite &border = map_walls[(invader_velocity < 0 ? (20 + i):(19 + i))];
+			if (invaders_collide(border)) {
+				invader_velocity = -invader_velocity;
+				move_invaders(invader_velocity, -0.1f);
+			}
+		}
+	}
     // this is called to draw the world
     void draw_world(int x, int y, int w, int h) {
       simulate();
