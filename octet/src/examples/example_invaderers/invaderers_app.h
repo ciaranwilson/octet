@@ -257,34 +257,47 @@ namespace octet {
 		  const float ship_speed = 0.1f;
 
 		  // left and right arrows
+
+
 		  if (is_key_down(key_up)) {
 			  sprites[ship_sprite].translate(0, ship_speed);
-			  if (sprites[ship_sprite].collides_with(sprites[first_border_sprite + 1]) ||
-				  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 2]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 3]) ||
-						  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 4]) ||
-							  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 5]) ||
-								  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 6]) ||
-									  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 0]))
-			  {
-				  sprites[ship_sprite].translate(0, -ship_speed);
+			  for (unsigned int j = 0; j < map_walls.size(); ++j) {
+				  if (sprites[ship_sprite].collides_with(map_walls[j])) {
+					  sprites[ship_sprite].translate(0, -ship_speed);
+
+
+
+					  /* if (sprites[ship_sprite].collides_with(sprites[first_border_sprite + 1]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 2]) ||
+							   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 3]) ||
+								   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 4]) ||
+									   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 5]) ||
+										   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 6]) ||
+											   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 0]))*/
+											   /* {*/
+
+				  }
 			  }
 		  }
 
-			  if (is_key_down(key_down)) {
-				  sprites[ship_sprite].translate(0, -ship_speed);
-				  if(sprites[ship_sprite].collides_with(sprites[first_border_sprite + 1]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 2]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 3]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 4]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 5]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 6]) ||
-					  sprites[ship_sprite].collides_with(sprites[first_border_sprite + 0]))
-				  {
+		  if (is_key_down(key_down)) {
+			  sprites[ship_sprite].translate(0, -ship_speed);
+			  for (unsigned int j = 0; j < map_walls.size(); ++j) {
+				  if (sprites[ship_sprite].collides_with(map_walls[j])) {
 					  sprites[ship_sprite].translate(0, ship_speed);
+					  /* if(sprites[ship_sprite].collides_with(sprites[first_border_sprite + 1]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 2]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 3]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 4]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 5]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 6]) ||
+						   sprites[ship_sprite].collides_with(sprites[first_border_sprite + 0]))*/
+
+
 				  }
 			  }
-		  
+
+		  }
 	  }
   
 	//use the keyboard to rotate the ship
@@ -351,37 +364,41 @@ namespace octet {
       const float missile_speed = 0.3f;
       for (int i = 0; i != num_missiles; ++i) {
         sprite &missile = sprites[first_missile_sprite+i];
-        if (missile.is_enabled()) {
-          missile.translate(0, missile_speed);
-          for (int j = 0; j != num_invaderers; ++j) {
-            sprite &invaderer = sprites[first_invaderer_sprite+j];
-            if (invaderer.is_enabled() && missile.collides_with(invaderer)) {
-              invaderer.is_enabled() = false;
-              invaderer.translate(20, 0);
-              missile.is_enabled() = false;
-              missile.translate(20, 0);
-              on_hit_invaderer();
+		if (missile.is_enabled()) {
+			missile.translate(0, missile_speed);
+			for (int j = 0; j != num_invaderers; ++j) {
+				sprite &invaderer = sprites[first_invaderer_sprite + j];
+				if (invaderer.is_enabled() && missile.collides_with(invaderer)) {
+					invaderer.is_enabled() = false;
+					invaderer.translate(20, 0);
+					missile.is_enabled() = false;
+					missile.translate(20, 0);
+					on_hit_invaderer();
 
-              goto next_missile;
-            }
-          }
-		  if (missile.collides_with(sprites[first_border_sprite + 1])) {
-			  missile.is_enabled() = false;
-			  missile.translate(20, 0);
-		  }
-		  else if (missile.collides_with(sprites[first_border_sprite + 0])) {
-			  missile.is_enabled() = false;
-			  missile.translate(20, 0);
-		  }
-		  else if (missile.collides_with(sprites[first_border_sprite + 2])) {
-			  missile.is_enabled() = false;
-			  missile.translate(20, 0);
-		  }
-		  else if (missile.collides_with(sprites[first_border_sprite + 3])) {
-			  missile.is_enabled() = false;
-			  missile.translate(20, 0);
-		  }
-        }
+					goto next_missile;
+				}
+			}
+
+			for (unsigned int j = 0; j < map_walls.size(); ++j) {
+
+				if (missile.collides_with(map_walls[j])) {
+					missile.is_enabled() = false;
+					missile.translate(20, 0);
+				}
+				/*else if (missile.collides_with(sprites[first_border_sprite + 0])) {
+					missile.is_enabled() = false;
+					missile.translate(20, 0);
+				}
+				else if (missile.collides_with(sprites[first_border_sprite + 2])) {
+					missile.is_enabled() = false;
+					missile.translate(20, 0);
+				}
+				else if (missile.collides_with(sprites[first_border_sprite + 3])) {
+					missile.is_enabled() = false;
+					missile.translate(20, 0);
+				}*/
+			}
+		}
       next_missile:;
       }
     }
