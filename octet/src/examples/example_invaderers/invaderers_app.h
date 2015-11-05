@@ -152,6 +152,7 @@ namespace octet {
 		  num_sound_sources = 8,
 		  num_rows = 5,
 		  num_cols = 10,
+
 		  num_missiles = 2,
 		  num_bombs = 2,
 		  num_borders = 7,
@@ -178,6 +179,13 @@ namespace octet {
 		  num_sprites,
 
 	  };
+
+	  static const int map_width = 26; // declaring csv init stuff
+	  static const int map_height = 26;
+	  int map[map_height][map_width];
+	  dynarray<sprite>map_walls;
+	  dynarray<sprite>map_ground;
+
 
 	  // timers for missiles and bombs
 	  int missiles_disabled;
@@ -462,10 +470,15 @@ namespace octet {
     invaderers_app(int argc, char **argv) : app(argc, argv), font(512, 256, "assets/big.fnt") {
     }
 
+
+
     // this is called once OpenGL is initialized
     void app_init() {
       // set up the shader
       texture_shader_.init();
+	  read_csv();
+	  setup_visual_map();
+
 
       // set up the matrices with a camera 5 units from the origin
       cameraToWorld.loadIdentity();
@@ -488,19 +501,19 @@ namespace octet {
         }
       }
 
-      // set the border to white for clarity
-      GLuint white = resource_dict::get_texture_handle(GL_RGB, "#ffffff");
-      sprites[first_border_sprite+0].init(white, 0, -4, 8, 0.2f);
-      sprites[first_border_sprite+1].init(white, 0,  4, 8, 0.2f);
-      sprites[first_border_sprite+2].init(white, -4, 0, 0.2f, 8);
-      sprites[first_border_sprite+3].init(white, 4,  0, 0.2f, 8);
-	  sprites[first_border_sprite+4].init(white, -2, 1.5f, 4, 0.2f);  //walls
-	  sprites[first_border_sprite+5].init(white, 2, 0, 4, 0.2f);   
-	  sprites[first_border_sprite+6].init(white, -2, -1.5f, 4, 0.2f);
+   //   // set the border to white for clarity
+   //   GLuint white = resource_dict::get_texture_handle(GL_RGB, "#ffffff");
+   //   sprites[first_border_sprite+0].init(white, 0, -4, 8, 0.2f);
+   //   sprites[first_border_sprite+1].init(white, 0,  4, 8, 0.2f);
+   //   sprites[first_border_sprite+2].init(white, -4, 0, 0.2f, 8);
+   //   sprites[first_border_sprite+3].init(white, 4,  0, 0.2f, 8);
+	  //sprites[first_border_sprite+4].init(white, -2, 1.5f, 4, 0.2f);  //walls
+	  //sprites[first_border_sprite+5].init(white, 2, 0, 4, 0.2f);   
+	  //sprites[first_border_sprite+6].init(white, -2, -1.5f, 4, 0.2f);
 
-	  //background
-	  GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/background.gif");
-	  sprites[backgound_sprite].init(background, 0, -3.0f, 6, 0.2f);
+	  ////background
+	  //GLuint background = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/background.gif");
+	  //sprites[backgound_sprite].init(background, 0, -3.0f, 6, 0.2f);
 
       // use the missile texture
       GLuint missile = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile.gif");
@@ -585,7 +598,20 @@ namespace octet {
 	  // drawing background
 	  my_background.render(texture_shader_, cameraToWorld);
 
-      // draw all the sprites
+	  // draw ground 
+
+	  for (unsigned int i = 0; i < map_ground.size(); ++i) {
+		  map_ground[i].render(texture_shader_, cameraToWorld);
+	  }
+
+	  //draw walls
+	  for (unsigned int i = 0; i < map_walls.size(); ++i) {
+		  map_walls[i].render(texture_shader_, cameraToWorld);
+	  }
+
+	  
+	  
+	  // draw all the sprites
       for (int i = 0; i != num_sprites; ++i) {
         sprites[i].render(texture_shader_, cameraToWorld);
       }
@@ -598,5 +624,58 @@ namespace octet {
       vec4 &cpos = cameraToWorld.w();
       alListener3f(AL_POSITION, cpos.x(), cpos.y(), cpos.z());
     }
-  };
+	void read_csv() {
+
+		std::ifstream file("ciarans_map.csv");
+
+		char buffer[2048];
+		int i = 0;
+
+		while (!file.eof()) {
+			file.getline(buffer, sizeof(buffer));
+
+			char *b = buffer;
+			for (int j = 0; ; ++j) {
+				char *e = b;
+				while (*e != 0 && *e != ';') ++e;
+
+				map[i][j] = std::atoi(b);
+
+				if (*e != ';') break;
+				b = e + 1;
+			}
+			++i;
+		}
+	}
+
+	void setup_visual_map() {
+
+		GLuint walls = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/walls.gif");
+		GLuint ground = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/ground.gif");
+
+		for (int i = 0; i < map_height; ++i) {
+			for (int j = 0; j < map_width; ++j) {
+
+				sprite s;
+
+				if (map[i][j] == 1) {
+
+					s.init(walls, -4 + 0.2f + 0.4f*j, 4 - 0.2f - 0.4f*i, 0.4f, 0.4f);
+					map_walls.push_back(s);
+
+
+
+
+				}
+				else if (map[i][j] == 0) {
+					s.init(ground, -4 + 0.2f + 0.4f*j, 4 - 0.2f - 0.4f*i, 0.4f, 0.4f);
+					map_ground.push_back(s);
+
+				}
+
+			}
+		}
+	}
+
+ };
 }
