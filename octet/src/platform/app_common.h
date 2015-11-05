@@ -62,6 +62,7 @@ namespace octet {
     key_alt,
 	key_a = 65,
 	key_d = 68,
+	key_x = 88,
 
     // mouse buttons
     key_lmb,
