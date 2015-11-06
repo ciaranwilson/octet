@@ -336,8 +336,8 @@ namespace octet {
 			vec2 pos = sprites[ship_sprite].get_Position();
 			if (is_key_going_down(key_x)) {
 				for (int i = 0; i != num_mines; ++i) {
-					GLuint mine = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile.gif");
-					sprites[first_mine_sprite + i].init(mine, pos.x(), pos.y(), 0.1f, 0.1f);
+					GLuint mine = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/bomb.gif");
+					sprites[first_mine_sprite + i].init(mine, pos.x(), pos.y(), 0.25f, 0.25f);
 					
 
 							break;
@@ -435,7 +435,7 @@ namespace octet {
 			for (int i = 0; i != num_bombs; ++i) {
 				sprite &bomb = sprites[first_bomb_sprite + i];
 				if (bomb.is_enabled()) {
-					bomb.translate(0, -bomb_speed);
+					bomb.translate(-bomb_speed,0 );
 					if (bomb.collides_with(sprites[ship_sprite])) {
 						bomb.is_enabled() = false;
 						bomb.translate(20, 0);
@@ -443,9 +443,18 @@ namespace octet {
 						on_hit_ship();
 						goto next_bomb;
 					}
-					if (bomb.collides_with(sprites[first_border_sprite + 0])) {
-						bomb.is_enabled() = true;
-						bomb.translate(20, 0);
+
+					for (unsigned int j = 0; j < map_walls.size(); ++j) {
+
+						if (bomb.collides_with(map_walls[j])) {
+							bomb.is_enabled() = false;
+							bomb.translate(20, 0);
+						}
+
+						/*if (bomb.collides_with(sprites[first_border_sprite + 0])) {
+							bomb.is_enabled() = true;
+							bomb.translate(20, 0);
+						}*/
 					}
 				}
 			next_bomb:;
@@ -542,8 +551,10 @@ namespace octet {
 
       font_texture = resource_dict::get_texture_handle(GL_RGBA, "assets/big_0.gif");
 
-      GLuint ship = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/Ship.gif");
-      sprites[ship_sprite].init(ship, -3, -3.3f, 0.25f, 0.25f);
+      GLuint ship = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/soldier_2.gif");
+      sprites[ship_sprite].init(ship, -3, -3.3f, 0.5f, 0.5f);
+
+	  sprites[ship_sprite].rotate(-90);
 
       GLuint GameOver = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/GameOver.gif");
       sprites[game_over_sprite].init(GameOver, 20, 0, 3, 1.5f);
@@ -573,7 +584,7 @@ namespace octet {
 	  //sprites[backgound_sprite].init(background, 0, -3.0f, 6, 0.2f);
 
       // use the missile texture
-      GLuint missile = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile.gif");
+      GLuint missile = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile_2.gif");
       for (int i = 0; i != num_missiles; ++i) {
         // create missiles off-screen
         sprites[first_missile_sprite+i].init(missile, 20, 0, 0.0625f, 0.25f);
@@ -581,10 +592,10 @@ namespace octet {
       }
 
       // use the bomb texture
-      GLuint bomb = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/bomb.gif");
+      GLuint bomb = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/missile.gif");
       for (int i = 0; i != num_bombs; ++i) {
         // create bombs off-screen
-        sprites[first_bomb_sprite+i].init(bomb, 20, 0, 0.0625f, 0.25f);
+        sprites[first_bomb_sprite+i].init(bomb, 20, 0, 0.25f, 0.062f);
         sprites[first_bomb_sprite+i].is_enabled() = false;
       }
 
