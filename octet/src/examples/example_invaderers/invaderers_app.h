@@ -568,7 +568,7 @@ namespace octet {
 	  sprites[ship_sprite].rotate(-90);
 
       GLuint GameOver = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/GameOver.gif");
-      sprites[game_over_sprite].init(GameOver, 20, 0, 3, 1.5f);
+      sprites[game_over_sprite].init(GameOver, 20, 0, 6, 3);
 
       GLuint invaderer = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper_right.gif");
       for (int j = 0; j != num_rows; ++j) {
@@ -674,7 +674,7 @@ namespace octet {
 
 		plant_mine();
 
-		fire_bombs();
+		//fire_bombs();
 
 		move_missiles();
 
