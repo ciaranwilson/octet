@@ -631,7 +631,7 @@ namespace octet {
     }
 
 	void check_sight() {
-		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
+		for (unsigned int i = first_invaderer_sprite; i < last_invaderer_sprite; ++i) {
 			float dy = fabsf(sprites[i].get_Position().y() - sprites[ship_sprite].get_Position().y());
 			if (dy < 0.15f) {
 				float dx = sprites[ship_sprite].get_Position().x() - sprites[i].get_Position().x();
