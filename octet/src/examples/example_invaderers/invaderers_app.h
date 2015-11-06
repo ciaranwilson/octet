@@ -33,6 +33,9 @@ namespace octet {
 
 		// true if this sprite is enabled.
 		bool enabled;
+
+		bool is_facing_right = true;
+
 	public:
 		sprite() {
 			texture = 0;
@@ -109,6 +112,10 @@ namespace octet {
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 		}
 
+		void swap_texture(int tex) {
+			texture = tex;
+		}
+
 		// move the object
 		void translate(float x, float y) {
 			modelToWorld.translate(x, y, 0);
@@ -153,6 +160,10 @@ namespace octet {
 
 		bool &is_enabled() {
 			return enabled;
+		}
+
+		bool& facing_right() {
+			return is_facing_right;
 		}
 	};
 
@@ -559,7 +570,7 @@ namespace octet {
       GLuint GameOver = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/GameOver.gif");
       sprites[game_over_sprite].init(GameOver, 20, 0, 3, 1.5f);
 
-      GLuint invaderer = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper.gif");
+      GLuint invaderer = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper_right.gif");
       for (int j = 0; j != num_rows; ++j) {
         for (int i = 0; i != num_cols; ++i) {
           assert(first_invaderer_sprite + i + j*num_cols <= last_invaderer_sprite);
@@ -616,7 +627,38 @@ namespace octet {
       num_lives = 2;
       game_over = false;
       score = 0;
+	  flip_inv_sprites();
     }
+
+	void check_sight() {
+		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
+			float dy = fabsf(sprites[i].get_Position().y() - sprites[ship_sprite].get_Position().y());
+			if (dy < 0.15f) {
+				float dx = sprites[ship_sprite].get_Position().x() - sprites[i].get_Position().x();
+				if (sprites[i].facing_right() && dx > 0.0f) {
+					game_over = true;
+					sprites[game_over_sprite].translate(-20, 0);
+				}
+				else if (!sprites[i].facing_right() && dx < 0.0f) {
+					game_over = true;
+					sprites[game_over_sprite].translate(-20, 0);
+				}
+			}
+		}
+	}
+
+	void flip_inv_sprites() {
+		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
+			if (sprites[i].facing_right()) {
+				GLuint trooper = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper_right.gif");
+				sprites[i].swap_texture(trooper);
+			}
+			else {
+				GLuint trooper = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper.gif");
+				sprites[i].swap_texture(trooper);
+			}
+		}
+	}
 
     // called every frame to move things
 	void simulate() {
@@ -640,6 +682,8 @@ namespace octet {
 
 		move_invaders(invader_velocity, 0);
 
+		check_sight();
+
 		for (unsigned int i = 0; i < map_walls.size(); i = i + 2) {
 			
 
@@ -648,6 +692,10 @@ namespace octet {
 			if (invaders_collide(border)) {
 				
 					invader_velocity = -invader_velocity;
+					for (unsigned int j = first_invaderer_sprite; j <= last_invaderer_sprite; ++j) {
+						sprites[j].facing_right() = !sprites[j].facing_right();
+						flip_inv_sprites();
+					}
 				
 				//move_invaders(invader_velocity, -0.1f);
 			}
