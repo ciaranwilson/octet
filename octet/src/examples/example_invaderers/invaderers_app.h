@@ -39,6 +39,14 @@ namespace octet {
 			enabled = true;
 		}
 
+		    float getxposition() {
+			return modelToWorld[3][0];	
+		}
+		
+			float getyposition() {
+			return modelToWorld[3][1];	
+		}
+
 		vec2 get_Position()
 		{
 			return modelToWorld.row(3).xy();
@@ -197,6 +205,8 @@ namespace octet {
 
 			num_sprites,
 
+			blast_sprite,
+
 		};
 
 		static const int map_width = 26; // declaring csv init stuff
@@ -250,12 +260,12 @@ namespace octet {
 			alSourcei(source, AL_BUFFER, bang);
 			alSourcePlay(source);
 
+			sprites[blast_sprite].translate(20, 0);
+
 			live_invaderers--;
 			score++;
-			if (live_invaderers == 4) {
-				invader_velocity *= 4;
-			}
-			else if (live_invaderers == 0) {
+			
+			if (live_invaderers == 0) {
 				game_over = true;
 				sprites[game_over_sprite].translate(-20, 0);
 			}
