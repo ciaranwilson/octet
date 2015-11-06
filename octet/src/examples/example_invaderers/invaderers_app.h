@@ -368,33 +368,33 @@ namespace octet {
 		
 
 		// pick and invader and fire a bomb
-		void fire_bombs() {
-			if (bombs_disabled) {
-				--bombs_disabled;
-			}
-			else {
-				// find an invaderer
-				sprite &ship = sprites[ship_sprite];
-				for (int j = randomizer.get(0, num_invaderers); j < num_invaderers; ++j) {
-					sprite &invaderer = sprites[first_invaderer_sprite + j];
-					if (invaderer.is_enabled() && invaderer.is_above(ship, 0.3f)) {
-						// find a bomb
-						for (int i = 0; i != num_bombs; ++i) {
-							if (!sprites[first_bomb_sprite + i].is_enabled()) {
-								sprites[first_bomb_sprite + i].set_relative(invaderer, 0, -0.25f);
-								sprites[first_bomb_sprite + i].is_enabled() = true;
-								bombs_disabled = 30;
-								ALuint source = get_sound_source();
-								alSourcei(source, AL_BUFFER, whoosh);
-								alSourcePlay(source);
-								return;
-							}
-						}
-						return;
-					}
-				}
-			}
-		}
+		//void fire_bombs() {
+		//	if (bombs_disabled) {
+		//		--bombs_disabled;
+		//	}
+		//	else {
+		//		// find an invaderer
+		//		sprite &ship = sprites[ship_sprite];
+		//		for (int j = randomizer.get(0, num_invaderers); j < num_invaderers; ++j) {
+		//			sprite &invaderer = sprites[first_invaderer_sprite + j];
+		//			if (invaderer.is_enabled() && invaderer.is_above(ship, 0.3f)) {
+		//				// find a bomb
+		//				for (int i = 0; i != num_bombs; ++i) {
+		//					if (!sprites[first_bomb_sprite + i].is_enabled()) {
+		//						sprites[first_bomb_sprite + i].set_relative(invaderer, 0, -0.25f);
+		//						sprites[first_bomb_sprite + i].is_enabled() = true;
+		//						bombs_disabled = 30;
+		//						ALuint source = get_sound_source();
+		//						alSourcei(source, AL_BUFFER, whoosh);
+		//						alSourcePlay(source);
+		//						return;
+		//					}
+		//				}
+		//				return;
+		//			}
+		//		}
+		//	}
+		//}
 
 		// animate the missiles
 		void move_missiles() {
@@ -674,11 +674,7 @@ namespace octet {
 
 		plant_mine();
 
-		//fire_bombs();
-
 		move_missiles();
-
-		move_bombs();
 
 		move_invaders(invader_velocity, 0);
 
@@ -739,10 +735,6 @@ namespace octet {
       for (int i = 0; i != num_sprites; ++i) {
         sprites[i].render(texture_shader_, cameraToWorld);
       }
-
-      char score_text[32];
-      sprintf(score_text, "score: %d   lives: %d\n", score, num_lives);
-      draw_text(texture_shader_, -1.75f, 2, 1.0f/256, score_text);
 
       // move the listener with the camera
       vec4 &cpos = cameraToWorld.w();
