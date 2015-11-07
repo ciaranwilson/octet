@@ -40,7 +40,9 @@ namespace octet {
 		sprite() {
 			texture = 0;
 			enabled = true;
+
 		}
+
 
 		vec2 get_Position()
 		{
@@ -116,6 +118,68 @@ namespace octet {
 			texture = tex;
 		}
 
+		void render(ciarans_shader &shader, mat4t &cameraToWorld) {
+			mat4t modelToProjection = mat4t::build_projection_matrix(modelToWorld, cameraToWorld);
+			shader.render(modelToProjection);
+
+			float vertices[] = {
+				-halfWidth, -halfHeight, 0,
+				halfWidth, -halfHeight, 0,
+				halfWidth, halfHeight, 0,
+				-halfWidth, halfHeight, 0,
+			};
+
+			glVertexAttribPointer(attribute_pos, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)vertices);
+			glEnableVertexAttribArray(attribute_pos);
+
+			static const float uvs[] = {
+				0, 0,
+				1, 0,
+				1, 1,
+				0, 1,
+			};
+
+			glVertexAttribPointer(attribute_uv, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)uvs);
+			glEnableVertexAttribArray(attribute_uv);
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		}
+
+	
+	
+	
+
+		/*void render(ciarans_shader &shader, mat4t &cameraToWorld, int v_width, int v_height) {
+
+			mat4t modelToProjection = mat4t::build_projection_matrix(modelToWorld, cameraToWorld);
+
+			shader.render(modelToProjection, vec2(v_width, v_height));
+
+			float vertices[] = {
+				-halfWidth, -halfHeight, 0,
+				halfWidth, -halfHeight, 0,
+				halfWidth,  halfHeight, 0,
+				-halfWidth,  halfHeight, 0,
+			};
+
+			glVertexAttribPointer(attribute_pos, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)vertices);
+			glEnableVertexAttribArray(attribute_pos);
+
+			static const float uvs[] = {
+				0,  0,
+				1,  0,
+				1,  1,
+				0,  1,
+			};
+
+			glVertexAttribPointer(attribute_uv, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)uvs);
+			glEnableVertexAttribArray(attribute_uv);
+
+			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+		}*/
+
+		
+
 		// move the object
 		void translate(float x, float y) {
 			modelToWorld.translate(x, y, 0);
@@ -174,6 +238,7 @@ namespace octet {
 
 		// shader to draw a textured triangle
 		texture_shader texture_shader_;
+		ciarans_shader ciarans_shader_;
 
 		enum {
 			num_sound_sources = 8,
@@ -204,7 +269,7 @@ namespace octet {
 			first_border_sprite,
 			last_border_sprite = first_border_sprite + num_borders - 1,
 
-			backgound_sprite,
+			my_background,
 
 			num_sprites,
 
@@ -240,7 +305,7 @@ namespace octet {
 
 		// big array of sprites
 		sprite sprites[num_sprites];
-		sprite my_background;
+		//sprite my_background;
 
 		sprite mines[num_mines];
 
@@ -407,7 +472,7 @@ namespace octet {
 						sprite &invaderer = sprites[first_invaderer_sprite + j];
 						if (invaderer.is_enabled() && missile.collides_with(invaderer)) {
 							invaderer.is_enabled() = false;
-							invaderer.translate(20, 0);
+							invaderer.translate(20, 20);
 							missile.is_enabled() = false;
 							missile.translate(20, 0);
 							on_hit_invaderer();
@@ -552,6 +617,7 @@ namespace octet {
     void app_init() {
       // set up the shader
       texture_shader_.init();
+	  ciarans_shader_.init();
 	  read_csv();
 	  setup_visual_map();
 
@@ -609,9 +675,9 @@ namespace octet {
         sprites[first_bomb_sprite+i].init(bomb, 20, 0, 0.25f, 0.062f);
         sprites[first_bomb_sprite+i].is_enabled() = false;
       }
-
-	  GLuint bg = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/spider_background.gif");
-	  my_background.init(bg, 0, 0, 758, 758);
+	  //GLuint white = resource_dict::get_texture_handle(GL_RGB, "#ffffff");
+	  //GLuint bg = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/spider_background.gif");
+	 // backgroud_sprite.init(0, 1, 1, 3, 3);
 
       // sounds
       whoosh = resource_dict::get_sound_handle(AL_FORMAT_MONO16, "assets/invaderers/whoosh.wav");
@@ -624,8 +690,7 @@ namespace octet {
       bombs_disabled = 50;
       invader_velocity = 0.02f;
       live_invaderers = num_invaderers;
-      num_lives = 2;
-      game_over = false;
+	  game_over = false;
       score = 0;
 	  flip_inv_sprites();
     }
@@ -633,32 +698,42 @@ namespace octet {
 	void check_sight() {
 		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
 			float dy = fabsf(sprites[i].get_Position().y() - sprites[ship_sprite].get_Position().y());
-			if (dy < 0.15f) {
+			if (dy < 0.3f) {
 				float dx = sprites[ship_sprite].get_Position().x() - sprites[i].get_Position().x();
 				if (sprites[i].facing_right() && dx > 0.0f) {
 					game_over = true;
 					sprites[game_over_sprite].translate(-20, 0);
+					
 				}
 				else if (!sprites[i].facing_right() && dx < 0.0f) {
 					game_over = true;
 					sprites[game_over_sprite].translate(-20, 0);
+					
 				}
+				
 			}
+			
 		}
+		
 	}
-
-	void flip_inv_sprites() {
+	
+		void flip_inv_sprites() {
 		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
 			if (sprites[i].facing_right()) {
 				GLuint trooper = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper_right.gif");
 				sprites[i].swap_texture(trooper);
+				
 			}
 			else {
 				GLuint trooper = resource_dict::get_texture_handle(GL_RGBA, "assets/invaderers/trooper.gif");
 				sprites[i].swap_texture(trooper);
+				
 			}
+			
 		}
+		
 	}
+	
 
     // called every frame to move things
 	void simulate() {
@@ -686,12 +761,13 @@ namespace octet {
 
 			sprite &border = map_walls[(invader_velocity < 0 ? (20 + i):(19 + i))];
 			if (invaders_collide(border)) {
-				
-					invader_velocity = -invader_velocity;
-					for (unsigned int j = first_invaderer_sprite; j <= last_invaderer_sprite; ++j) {
-						sprites[j].facing_right() = !sprites[j].facing_right();
-						flip_inv_sprites();
-					}
+
+				invader_velocity = -invader_velocity;
+				for (unsigned int j = first_invaderer_sprite; j <= last_invaderer_sprite; ++j) {
+					sprites[j].facing_right() = !sprites[j].facing_right();
+					flip_inv_sprites();
+					
+				}
 				
 				//move_invaders(invader_velocity, -0.1f);
 			}
@@ -704,9 +780,11 @@ namespace octet {
       // set a viewport - includes whole window area
       glViewport(x, y, w, h);
 
+
       // clear the background to black
       glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
       // don't allow Z buffer depth testing (closer objects are always drawn in front of far ones)
       glDisable(GL_DEPTH_TEST);
@@ -716,14 +794,14 @@ namespace octet {
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	  // drawing background
-	  my_background.render(texture_shader_, cameraToWorld);
-
-	  // draw ground 
+	/*  backgound_sprite.render(ciarans_shader_, cameraToWorld, w, h);
+	  backgroud_sprite.translate(1, 1);*/
 
 	  for (unsigned int i = 0; i < map_ground.size(); ++i) {
-		  map_ground[i].render(texture_shader_, cameraToWorld);
+		  map_ground[i].render(ciarans_shader_, cameraToWorld);
 	  }
-
+	
+	  // draw ground 
 	  //draw walls
 	  for (unsigned int i = 0; i < map_walls.size(); ++i) {
 		  map_walls[i].render(texture_shader_, cameraToWorld);
@@ -778,15 +856,13 @@ namespace octet {
 
 					s.init(walls, -4 + 0.2f + 0.4f*j, 4 - 0.2f - 0.4f*i, 0.4f, 0.4f);
 					map_walls.push_back(s);
-
-
-
-
 				}
-				else if (map[i][j] == 0) {
-					s.init(ground, -4 + 0.2f + 0.4f*j, 4 - 0.2f - 0.4f*i, 0.4f, 0.4f);
-					map_ground.push_back(s);
 
+				else if (map[i][j] == 0) {
+
+					s.init(walls, -4 + 0.2f + 0.4f*j, 4 - 0.2f - 0.4f*i, 0.4f, 0.4f);
+					map_ground.push_back(s);
+				
 				}
 
 			}

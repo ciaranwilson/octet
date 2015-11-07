@@ -215,6 +215,7 @@
     <ClInclude Include="..\..\shaders\shader.h" />
     <ClInclude Include="..\..\shaders\shaders.h" />
     <ClInclude Include="..\..\shaders\texture_shader.h" />
+    <ClInclude Include="ciarans_shader.h" />
     <ClInclude Include="example_invaderers.h" />
     <ClInclude Include="Header.h" />
   </ItemGroup>
