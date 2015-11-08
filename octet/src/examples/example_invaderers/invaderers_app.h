@@ -202,11 +202,11 @@ namespace octet {
 		ciarans_shader ciarans_shader_;
 
 		enum {
-			num_sound_sources = 8,
+			num_sound_sources = 2,
 			num_rows = 3,
 			num_cols = 1,
 			num_missiles = 2,
-			num_mines = 3,
+			num_mines = 1,
 			num_borders = 7,
 			num_invaderers = num_rows * num_cols,
 
@@ -283,14 +283,11 @@ namespace octet {
 
 		// called when we hit an enemy
 		void on_hit_invaderer() {
-			ALuint source = get_sound_source();
-			alSourcei(source, AL_BUFFER, bang);
-			alSourcePlay(source);
 
 			live_invaderers--;
 			score++;
 			if (live_invaderers == 1) {
-				invader_velocity *= 4;
+				invader_velocity *= 2;
 				sprites[alert_sprite].is_enabled() = true;
 			}
 			else if (live_invaderers == 0) {
@@ -429,6 +426,9 @@ namespace octet {
 						invaderer.translate(20, 20);
 						mines.is_enabled() = false;
 						mines.translate(20, 0);
+						ALuint source = get_sound_source();
+						alSourcei(source, AL_BUFFER, bang);
+						alSourcePlay(source);
 						on_hit_invaderer();
 						}
 					}
@@ -547,7 +547,7 @@ namespace octet {
 
       // sundry counters and game state.
       missiles_disabled = 0;
-      invader_velocity = 0.02f;
+      invader_velocity = 0.03f;
       live_invaderers = num_invaderers;
 	  game_over = false;
 	  game_complete = false;
