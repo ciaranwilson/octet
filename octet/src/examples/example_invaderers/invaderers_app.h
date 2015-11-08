@@ -578,7 +578,7 @@ namespace octet {
 		
 	}
 	
-	// this swaps the enemy sprite to change direction
+	// this swaps the enemy sprite when it changes direction
 	void flip_inv_sprites() {
 		for (unsigned int i = first_invaderer_sprite; i <= last_invaderer_sprite; ++i) {
 			if (sprites[i].facing_right()) {
@@ -601,7 +601,6 @@ namespace octet {
 		if (game_over) {
 			return;					
 		}
-		
 		if (game_complete) {
 			return;
 		}
@@ -631,7 +630,7 @@ namespace octet {
 					flip_inv_sprites();
 
 					if (live_invaderers == 1) {
-						move_invaders(invader_velocity, -0.1f);
+						move_invaders(invader_velocity, -0.25f);
 					}
 				}
 			}
