@@ -3,7 +3,7 @@
 I intended to create a stealth action game in the style of Metal Gear Solid, by expanding on the basic structure of Invaderers. I wanted to include walls and/or barriers to create spaces for hiding, to provide some interest in the level. (fig.1) 
 I also wanted to introduce new mechanics such as the ability to plant bombs to destroy enemy sentries (fig.2) and also a stealth mechanic, whereby the player must remain hidden - to be spotted by an emeny means Game Over, much like Metal Gear played on the harder settings (fig.3).
 
-1. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/game.jpg" height="450px"> 2. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/bomb.jpg" height="450px"> 
+1. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/game.jpg" height="250px"> 2. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/bomb.jpg" height="250px"> 
 
 The first step was to introduce more movement for the player, I implemented a rotation method within the main in the sprite class, to rotate the players character on the Z axis, using the left and right keys. 
 
@@ -112,7 +112,7 @@ In order to make the sentries appear to change the direction theyre facing, I in
 		
 	}
 
-3 <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/spotted.jpg" height="450px"> 4. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/complete.jpg" height="450px">
+3 <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/spotted.jpg" height="250px"> 4. <img src="https://raw.githubusercontent.com/CiaranWilson/octet/master/octet/assets/invaderers/complete.jpg" height="250px">
 
 When only one enemy remains, it triggers alert mode, causing a red filter to appear on the screen and the remaining enemy to speed up and actively seek out the player (fig.3)
 
